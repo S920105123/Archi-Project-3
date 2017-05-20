@@ -1,5 +1,5 @@
 all: simulator.o datapath.o loader.o const.o error.o
-	g++ -std=c++11 simulator.o datapath.o loader.o const.o error.o -O2 -o single_cycle
+	g++ -std=c++11 simulator.o datapath.o loader.o const.o error.o -O2 -o CMP
 
 simulator.o:
 	g++ -std=c++11 simulator.cpp -O3 -c
