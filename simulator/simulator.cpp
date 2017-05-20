@@ -5,13 +5,15 @@
 #include "const.hpp"
 #include "loader.hpp"
 #include "datapath.hpp"
-#include "error.hpp"
 //#define DEBUG
 
 FILE *fout;
 int num_inst, num_word, cycle;
 char buf[256];
-bool stop_simulate;
+
+void init_parameter() {
+	
+}
 
 inline void print_reg(int idx, bool &first) {
 	/* Print changed registers into snapshot.rpt. */
@@ -67,7 +69,7 @@ void simulate()
 	/* This function control the flow of simulate. */
 	int idx=(PC>>2), opcode=inst[idx].opcode, funct=inst[idx].funct;
 	
-	while (opcode!=HALT && !stop_simulate) {
+	while (opcode!=HALT) {
 		if (PC>=1024 || PC<0) {
 			return;
 		}
@@ -89,9 +91,7 @@ void simulate()
 			//fout<<inst_str[opcode]<<"\n";
 			(*func[opcode])();
 		}
-		if (!stop_simulate) {
-			output();
-		}
+		output();
 		
 		idx=PC>>2;
 		opcode=inst[idx].opcode;
@@ -99,25 +99,24 @@ void simulate()
 	}
 }
 
-int main()
+int main(int argc, char *argv[])
 {	
 	bool first=true;
 
 	/* Initialization */	
-	init_error();
 	init_const();
 	init_datapath();
+	init_parameter(argc,argv);
 	load_img(PC,num_inst,num_word,sp,pre_sp);
 	fout=fopen("snapshot.rpt","wb");
+	
 	
 	#ifdef DEBUG
 	for (int i=PC>>2;i<(PC>>2)+num_inst;i++) {
 		print_inst(&inst[i]);
 	}
-//	for (int i=0;i<num_word;i++) {
-//		std::cerr<<std::hex<<mem[i]<<std::endl;
-//	}
 	#endif
+	
 	for (int i=0;i<35;i++) {
 		print_reg(i,first);
 	}
@@ -126,6 +125,5 @@ int main()
 	
 	/* Start simulation */
 	simulate();
-	fclose(ferr);
 	fclose(fout);
 }
