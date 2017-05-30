@@ -1,5 +1,8 @@
-all: simulator.o datapath.o loader.o const.o error.o
-	g++ -std=c++11 simulator.o datapath.o loader.o const.o error.o -O2 -o single_cycle
+all: simulator.o datapath.o loader.o const.o error.o memsys.o
+	g++ -std=c++11 simulator.o datapath.o loader.o const.o memsys.o -O3 -o CMP
+
+memsys.o:
+	g++ -std=c++11 memsys.hpp memsys.cpp -O3 -c
 
 simulator.o:
 	g++ -std=c++11 simulator.cpp -O3 -c
@@ -9,9 +12,6 @@ datapath.o:
 
 loader.o:
 	g++ -std=c++11 loader.hpp loader.cpp -O3 -c
-
-error.o:
-	g++ -std=c++11 error.hpp error.cpp -O3 -c
 
 const.o:
 	g++ -std=c++11 const.hpp const.cpp -O3 -c
