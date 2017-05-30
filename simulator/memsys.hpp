@@ -1,20 +1,20 @@
 #ifndef MEMSYS_H
 #define MEMSYS_H
 #include <vector>
+#define NOT_FOUND -1
 
 struct Memory_entry {
 	bool valid;
-	int time;
 };
 
 struct Pagetable_entry {
 	bool valid;
-	int time,VPN,PPN;
+	int time,ppn;
 };
 
 struct Cache_entry {
-	bool valid;
-	int time,tag;
+	bool valid,used;
+	int tag;
 };
 
 class Memory_system {
@@ -26,7 +26,7 @@ public:
 	
 private:
 	int disk_sz;
-	int pg_sz, mem_sz, cache_sz, blk_sz, cache_ass;
+	int pg_sz, mem_sz, cache_sz, blk_sz, assoc;
 	int cache_hit, cache_miss, pgt_hit, pgt_miss, tlb_hit, tlb_miss;
 	int tag_pre, tag_post, pg_pre, pg_post;
 	std::vector<Pagetable_entry> pgt;

@@ -11,10 +11,6 @@ FILE *fout;
 int num_inst, num_word, cycle;
 char buf[256];
 
-void init_parameter() {
-	
-}
-
 inline void print_reg(int idx, bool &first) {
 	/* Print changed registers into snapshot.rpt. */
 	int len;
@@ -106,7 +102,6 @@ int main(int argc, char *argv[])
 	/* Initialization */	
 	init_const();
 	init_datapath();
-	init_parameter(argc,argv);
 	load_img(PC,num_inst,num_word,sp,pre_sp);
 	fout=fopen("snapshot.rpt","wb");
 	
