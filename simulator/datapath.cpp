@@ -1,10 +1,7 @@
-#include "error.hpp"
 #include "datapath.hpp"
-#include "loader.hpp" 
+#include "loader.hpp"
 #include <climits>
 #include <queue>
-
-extern bool stop_simulate;
 
 /* Convesion between big/little endian */
 extern int btol(int target);
@@ -14,7 +11,6 @@ extern short h_btol(short target);
 std::queue<int> change;
 int reg[35], HI=32, LO=33, &PC=reg[34], &sp=reg[29];
 int pre_reg[35], &pre_PC=pre_reg[34], &pre_sp=pre_reg[29];
-bool hilo_used=false;
 
 /* Function pointers */
 void (*R_func[64])();
@@ -23,25 +19,16 @@ void (*func[64])();
 /* R-format instructions */
 void inst_add() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rs]+pre_reg[rt];
 		change.push(rd);
 	}
-	if ((pre_reg[rs]>0&&pre_reg[rt]>0&&pre_reg[rs]>INT_MAX-pre_reg[rt]) ||
-	    (pre_reg[rs]<0&&pre_reg[rt]<0&&pre_reg[rs]<INT_MIN-pre_reg[rt])) {
-			//std::cerr<<"ovf\n";
-			error(NUM_OVF);
-	}
-	
+
 	PC=PC+4;
 }
 void inst_addu() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rs]+pre_reg[rt];
 		change.push(rd);
 	}
@@ -49,23 +36,15 @@ void inst_addu() {
 }
 void inst_sub() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rs]-pre_reg[rt];
 		change.push(rd);
-	}
-	if ((pre_reg[rs]>0&&-pre_reg[rt]>0&&pre_reg[rs]>INT_MAX+pre_reg[rt]) ||
-	    (pre_reg[rs]<0&&-pre_reg[rt]<0&&pre_reg[rs]<INT_MIN+pre_reg[rt])) {
-			error(NUM_OVF);
 	}
 	PC=PC+4;
 }
 void inst_and() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rs]&pre_reg[rt];
 		change.push(rd);
 	}
@@ -73,9 +52,7 @@ void inst_and() {
 }
 void inst_or() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rs]|pre_reg[rt];
 		change.push(rd);
 	}
@@ -83,9 +60,7 @@ void inst_or() {
 }
 void inst_xor() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rs]^pre_reg[rt];
 		change.push(rd);
 	}
@@ -93,9 +68,7 @@ void inst_xor() {
 }
 void inst_nor() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=~(pre_reg[rs]|pre_reg[rt]);
 		change.push(rd);
 	}
@@ -103,9 +76,7 @@ void inst_nor() {
 }
 void inst_nand() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=~(pre_reg[rs]&pre_reg[rt]);
 		change.push(rd);
 	}
@@ -113,9 +84,7 @@ void inst_nand() {
 }
 void inst_slt() {
 	int rd=inst[PC>>2].rd, rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rs]<pre_reg[rt];
 		change.push(rd);
 	}
@@ -123,9 +92,7 @@ void inst_slt() {
 }
 void inst_sll() {
 	int rd=inst[PC>>2].rd, rt=inst[PC>>2].rt, immediate=inst[PC>>2].immediate;
-	if (rd==0 && (rt!=0||immediate!=0)) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rt]<<immediate;
 		change.push(rd);
 	}
@@ -133,10 +100,8 @@ void inst_sll() {
 }
 void inst_srl() {
 	int rd=inst[PC>>2].rd, rt=inst[PC>>2].rt, immediate=inst[PC>>2].immediate;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
-		if (immediate!=0) {	
+	if (rd!=0) {
+		if (immediate!=0) {
 			change.push(rd);
 			reg[rd]=pre_reg[rt]>>1;
 			reg[rd]=reg[rd]&0x7FFFFFFF;
@@ -150,9 +115,7 @@ void inst_srl() {
 }
 void inst_sra() {
 	int rd=inst[PC>>2].rd, rt=inst[PC>>2].rt, immediate=inst[PC>>2].immediate;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[rt]>>immediate;
 		change.push(rd);
 	}
@@ -165,11 +128,6 @@ void inst_jr() {
 void inst_mult() {
 	int rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
 	long long res=pre_reg[rs];
-	if (hilo_used) {
-		error(OVERWRITE_HILO);
-	} else {
-		hilo_used=true;
-	}
 	res=res*pre_reg[rt];
 	reg[HI]=res>>32;
 	reg[LO]=res&0x00000000FFFFFFFF;
@@ -181,11 +139,6 @@ void inst_multu() {
 	int rs=inst[PC>>2].rs, rt=inst[PC>>2].rt;
 	unsigned long long res=(unsigned int)pre_reg[rs];
 	res=res*(unsigned int)pre_reg[rt];
-	if (hilo_used) {
-		error(OVERWRITE_HILO);
-	} else {
-		hilo_used=true;
-	}
 	reg[HI]=res>>32;
 	reg[LO]=res&(long long)0x00000000FFFFFFFF;
 	change.push(HI);
@@ -194,75 +147,42 @@ void inst_multu() {
 }
 void inst_mfhi() {
 	int rd=inst[PC>>2].rd;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[HI];
 		change.push(rd);
 	}
-	hilo_used=false;
 	PC=PC+4;
 }
 void inst_mflo() {
 	int rd=inst[PC>>2].rd;
-	hilo_used=false;
-	if (rd==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rd!=0) {
 		reg[rd]=pre_reg[LO];
 		change.push(rd);
-	}	
+	}
 	PC=PC+4;
 }
 
 /* I-format instructions */
 void inst_addi() {
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rt!=0) {
 		reg[rt]=pre_reg[rs]+immediate;
 		change.push(rt);
-	}
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-			error(NUM_OVF);
 	}
 	PC=PC+4;
 }
 void inst_addiu() {
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rt!=0) {
 		reg[rt]=pre_reg[rs]+immediate;
 		change.push(rt);
-	} 
+	}
 	PC=PC+4;
 }
 void inst_lw() {
-	bool block=false;
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
 	int offset=immediate+pre_reg[rs];
-	if (rt==0) {
-		error(WRITE_ZERO);
-		block=true;
-	}
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-		error(NUM_OVF);
-	}
-	if (pre_reg[rs]+immediate<0 || pre_reg[rs]+immediate+3>=1024)  {
-		error(MEM_ADDR_OVF);
-		stop_simulate=true;
-		block=true;
-	}
-	if ((pre_reg[rs]+immediate)%4!=0) {
-		error(DATA_MISALIGNED);
-		stop_simulate=true;
-		block=true;
-	}
-	if (!block) {
+	if (rt!=0) {
 		reg[rt]=mem[offset>>2];
 		reg[rt]=btol(reg[rt]);
 		change.push(rt);
@@ -270,28 +190,9 @@ void inst_lw() {
 	PC=PC+4;
 }
 void inst_lh() {
-	bool block=false;
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
 	int offset=immediate+pre_reg[rs];
-	if (rt==0) {
-		error(WRITE_ZERO);
-		block=true;
-	}
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-		error(NUM_OVF);
-	}
-	if (pre_reg[rs]+immediate<0 || pre_reg[rs]+immediate+1>=1024)  {
-		error(MEM_ADDR_OVF);
-		stop_simulate=true;
-		block=true;
-	}
-	if ((pre_reg[rs]+immediate)%2!=0) {
-		error(DATA_MISALIGNED);
-		stop_simulate=true;
-		block=true;
-	}
-	if (!block) {
+	if (rt!=0) {
 		reg[rt]=*((short*)mem+(offset>>1));
 		reg[rt]=h_btol((short)reg[rt]);
 		change.push(rt);
@@ -299,28 +200,9 @@ void inst_lh() {
 	PC=PC+4;
 }
 void inst_lhu() {
-	bool block=false;
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
 	int offset=immediate+pre_reg[rs];
-	if (rt==0) {
-		error(WRITE_ZERO);
-		block=true;
-	}
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-		error(NUM_OVF);
-	} 
-	if (pre_reg[rs]+immediate<0 || pre_reg[rs]+immediate+1>=1024)  {
-		error(MEM_ADDR_OVF);
-		stop_simulate=true;
-		block=true;
-	}
-	if ((pre_reg[rs]+immediate)%2!=0) {
-		error(DATA_MISALIGNED);
-		stop_simulate=true;
-		block=true;
-	}
-	if (!block) {
+	if (rt!=0) {
 		reg[rt]=*((unsigned short*)mem+(offset>>1));
 		reg[rt]=(unsigned short)h_btol(reg[rt]);
 		reg[rt]=reg[rt]&0x0000FFFF;  // Just in case.
@@ -329,44 +211,16 @@ void inst_lhu() {
 	PC=PC+4;
 }
 void inst_lb() {
-	bool block=false;
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-		block=true;
-	}
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-		error(NUM_OVF);
-	}
-	if (pre_reg[rs]+immediate<0 || pre_reg[rs]+immediate>=1024)  {
-		error(MEM_ADDR_OVF);
-		stop_simulate=true;
-		block=true;
-	}
-	if (!block){
+	if (rt!=0){
 		reg[rt]=*((char*)mem+pre_reg[rs]+immediate);
 		change.push(rt);
 	}
 	PC=PC+4;
 }
 void inst_lbu() {
-	bool block=false;
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-		block=true;
-	}
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-		error(NUM_OVF);
-	}
-	if (pre_reg[rs]+immediate<0 || pre_reg[rs]+immediate>=1024)  {
-		error(MEM_ADDR_OVF);
-		stop_simulate=true;
-		block=true;
-	}
-	if (!block){
+	if (rt!=0){
 		reg[rt]=*((unsigned char*)mem+pre_reg[rs]+immediate);
 		reg[rt]=reg[rt]&0x000000FF;  // Just in case.
 		change.push(rt);
@@ -374,116 +228,66 @@ void inst_lbu() {
 	PC=PC+4;
 }
 void inst_sw() {
-	bool block=false;
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
 	int offset=immediate+pre_reg[rs];
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-		error(NUM_OVF);
-	}
-	if (pre_reg[rs]+immediate<0 || pre_reg[rs]+immediate+3>=1024)  {
-		error(MEM_ADDR_OVF);
-		stop_simulate=true;
-		block=true;
-	}
-	if ((pre_reg[rs]+immediate)%4!=0) {
-		error(DATA_MISALIGNED);
-		stop_simulate=true;
-		block=true;
-	}
-	if (!block) {
+	if (rt!=0) {
 		mem[offset>>2]=btol(reg[rt]);
 	}
 	PC=PC+4;
 }
 void inst_sh() {
-	bool block=false;
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
 	int offset=immediate+pre_reg[rs];
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-		error(NUM_OVF);
-	}
-	if (pre_reg[rs]+immediate<0 || pre_reg[rs]+immediate+1>=1024)  {
-		error(MEM_ADDR_OVF);
-		stop_simulate=true;
-		block=true;
-	}
-	if ((pre_reg[rs]+immediate)%2!=0) {
-		error(DATA_MISALIGNED);
-		stop_simulate=true;
-		block=true;
-	}
-	if (!block) {
+	if (rt!=0) {
 		*((short*)mem+(offset>>1))=h_btol(reg[rt]&0x0000FFFF);
 	}
 	PC=PC+4;
 }
 void inst_sb() {
-	bool block=false;
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if ((pre_reg[rs]>0&&immediate>0&&pre_reg[rs]>INT_MAX-immediate) ||
-	    (pre_reg[rs]<0&&immediate<0&&pre_reg[rs]<INT_MIN-immediate)) {
-		error(NUM_OVF);
-	}
-	if (pre_reg[rs]+immediate<0 || pre_reg[rs]+immediate>=1024)  {
-		error(MEM_ADDR_OVF);
-		stop_simulate=true;
-		block=true;
-	}
-	if (!block) {
+	if (rt!=0) {
 		*((char*)mem+pre_reg[rs]+immediate)=reg[rt]&0x000000FF;
 	}
 	PC=PC+4;
 }
 void inst_lui() {
 	int rt=inst[PC>>2].rt, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rt!=0) {
 		reg[rt]=immediate<<16;
 		change.push(rt);
-	} 
+	}
 	PC=PC+4;
 }
 void inst_andi() {
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rt!=0) {
 		reg[rt]=pre_reg[rs]&immediate;
 		change.push(rt);
-	} 
+	}
 	PC=PC+4;
 }
 void inst_ori() {
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rt!=0) {
 		reg[rt]=pre_reg[rs]|immediate;
 		change.push(rt);
-	} 
+	}
 	PC=PC+4;
 }
 void inst_nori() {
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rt!=0) {
 		reg[rt]=~(pre_reg[rs]|immediate);
 		change.push(rt);
-	} 
+	}
 	PC=PC+4;
 }
 void inst_slti() {
 	int rt=inst[PC>>2].rt, rs=inst[PC>>2].rs, immediate=inst[PC>>2].immediate;
-	if (rt==0) {
-		error(WRITE_ZERO);
-	} else {
+	if (rt!=0) {
 		reg[rt]=pre_reg[rs]<immediate;
 		change.push(rt);
-	} 
+	}
 	PC=PC+4;
 }
 void inst_beq() {
@@ -520,7 +324,7 @@ void inst_jal() {
 
 void init_datapath() {
 	/* Init function pointers. */
-	
+
 	/* R-format */
 	R_func[ADD]=&inst_add;
 	R_func[ADDU]=&inst_addu;
@@ -539,7 +343,7 @@ void init_datapath() {
 	R_func[MULTU]=&inst_multu;
 	R_func[MFHI]=&inst_mfhi;
 	R_func[MFLO]=&inst_mflo;
-	
+
 	/* I-format and J-format */
 	func[ADDI]=&inst_addi;
 	func[ADDIU]=&inst_addiu;
