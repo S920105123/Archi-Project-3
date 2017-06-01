@@ -6,7 +6,7 @@
 #include "loader.hpp"
 #include "datapath.hpp"
 #include "memsys.hpp"
-#define DEBUG
+//#define DEBUG
 
 FILE *fout,*freport;
 int num_inst, num_word, cycle;

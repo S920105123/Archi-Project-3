@@ -16,7 +16,7 @@ do
 	./CMP > tmp
 	if [ "$(cat tmp)" != "" ]; then
 		cd ..;	
-		echo -e "   Testcase: ${dir}\t- ${YELLOW}[Illegal]${NC}... ($(cat golden/tmp))"
+		echo -e "   Testcase: ${dir}       \t- ${YELLOW}[Illegal]${NC}..."
 		continue;
 	fi
 	cd ../simulator
@@ -26,9 +26,9 @@ do
 	diff ./golden/report.rpt ./simulator/report.rpt > diff_report.tmp
 	diff ./golden/trace.rpt ./simulator/trace.rpt > diff_trace.tmp
 	if [ "$(cat diff_snapshot.tmp)" = "" -a "$(cat diff_trace.tmp)" = "" -a "$(cat diff_report.tmp)" = "" ]; then
-		echo -e "   Testcase: ${dir}\t- ${GREEN}[Accecpted]${NC}..."
+		echo -e "   Testcase: ${dir}       \t- ${GREEN}[Accecpted]${NC}..."
 	else
-		echo -e "   Testcase: ${dir}\t- ${RED}[Wrong Answer]${NC}..."
+		echo -e "   Testcase: ${dir}       \t- ${RED}[Wrong Answer]${NC}..."
 		echo "${dir}" > who
 		break
 	fi
