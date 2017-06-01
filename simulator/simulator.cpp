@@ -5,6 +5,7 @@
 #include "const.hpp"
 #include "loader.hpp"
 #include "datapath.hpp"
+#include "memsys.hpp"
 //#define DEBUG
 
 FILE *fout;
@@ -70,6 +71,9 @@ void simulate()
 			return;
 		}
 		cycle++;
+		if (trace) fprintf(ftrace,"%d, ",cycle);
+		i_memsys->access(cycle,PC);
+		if (trace) fprintf(ftrace," ; ");
 		//std::cerr<<"cycle "<<std::dec<<cycle<<": ";
 		//print_inst(&inst[idx]);
 		if (opcode==0) {
@@ -77,14 +81,14 @@ void simulate()
 				std::cerr<<"illegal instruction found at 0x"<<std::setw(8)<<std::setfill('0')<<std::hex<<std::uppercase<<PC<<std::endl;
 				return;
 			}
-			//fout<<inst_str_r[funct]<<"\n";
+			if (trace) fprintf(ftrace,"%s:",inst_str_r[funct].c_str());
 			(*R_func[funct])();
 		} else {
 			if (!legal[opcode]) {
 				std::cerr<<"illegal instruction found at 0x"<<std::setw(8)<<std::setfill('0')<<std::hex<<std::uppercase<<PC<<std::endl;
 				return;
 			}
-			//fout<<inst_str[opcode]<<"\n";
+			if (trace) fprintf(ftrace,"%s:",inst_str[opcode].c_str());
 			(*func[opcode])();
 		}
 		output();
@@ -92,7 +96,12 @@ void simulate()
 		idx=PC>>2;
 		opcode=inst[idx].opcode;
 		funct=inst[idx].funct;
+		if (trace) fprintf(ftrace,"\n");
 	}
+	if (trace) fprintf(ftrace,"%d, halt\t: ",cycle);
+	i_memsys->access(cycle,PC);
+	if (trace) fprintf(ftrace,";\t");
+	if (trace) fprintf(ftrace,"\n");
 }
 
 int main(int argc, char *argv[])
@@ -102,6 +111,8 @@ int main(int argc, char *argv[])
 	/* Initialization */	
 	init_const();
 	init_datapath();
+	init_memsys(argc,argv);
+	if (trace) init_str_const();
 	load_img(PC,num_inst,num_word,sp,pre_sp);
 	fout=fopen("snapshot.rpt","wb");
 	

@@ -1,12 +1,18 @@
 #include "memsys.hpp"
 #include <climits>
 #include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+
+FILE *ftrace; 
+Memory_system *i_memsys, *d_memsys;
 
 Memory_system::Memory_system() { /* Do nothing */ }
 
-Memory_system::Memory_system(int _pg_sz, int _mem_sz, int _cache_sz, int _blk_sz, int _assoc) {
+Memory_system::Memory_system(char _id, int _pg_sz, int _mem_sz, int _cache_sz, int _blk_sz, int _assoc) {
 	/* Construct memory system by given parameters */
 	disk_sz=1024;
+	id=_id;
 	
 	/* Configurable terms */
 	pg_sz=_pg_sz;
@@ -55,12 +61,10 @@ int Memory_system::tlb_find(int cycle, int vpn) {
 	for (int i=0;i<tlb.size();i++) {
 		Pagetable_entry &entry = tlb[i];
 		if (entry.valid && entry.vpn==vpn) {
-			tlb_hit++;
 			entry.time=cycle;
 			return entry.ppn;
 		}
 	}
-	tlb_miss++;
 	return NOT_FOUND;
 }
 
@@ -104,7 +108,6 @@ int Memory_system::pgt_find(int cycle, int vpn) {
 		pgt[vpn].time=cycle;
 		return pgt[vpn].ppn;
 	} else {
-		pgt_mis++;
 		return NOT_FOUND;
 	}
 }
@@ -123,7 +126,7 @@ int Memory_system::pgt_insert(int cycle, int vpn) {
 	}
 	
 	/* Replace least recently used (LRU) ppn */
-	int lru=INT_MAX,pos;
+	int lru=INT_MAX,pos=-1;
 	for (int i=0;i<pgt.size();i++) {
 		Pagetable_entry &entry = pgt[i];
 		if (entry.valid && entry.time<lru) {
@@ -138,6 +141,7 @@ int Memory_system::pgt_insert(int cycle, int vpn) {
 	pgt[vpn].ppn=pgt[pos].ppn;
 	pgt[vpn].time=cycle;
 	tlb_erase(pos);
+	return pgt[vpn].ppn;
 }
 
 /* Cache operations */
@@ -153,7 +157,6 @@ bool Memory_system::cache_find(int addr) {
 		if (cache[idx+i].valid && cache[idx+i].tag==tag) {
 			cache[idx+i].used=true;
 			miss=false;
-			cache_hit++;
 		}
 		if (cache[idx+i].used) {
 			num_one++;
@@ -166,12 +169,10 @@ bool Memory_system::cache_find(int addr) {
 			}
 		}
 	}
-	if (miss) {
-		cache_miss++;
-	}
+	return !miss;
 }
 
-bool Memory_system::cache_insert(int addr) {
+void Memory_system::cache_insert(int addr) {
 	int num_set=cache.size()/assoc,idx,tag,num_one=0,pos=-1;
 	bool insert=false;
 	addr/=blk_sz;
@@ -206,10 +207,30 @@ bool Memory_system::cache_insert(int addr) {
 	}
 }
 
-int Memory_system::get_ppn(int addr) {
-	
+void Memory_system::access(int cycle, int addr) {
+	int vpn,ppn;
 }
 
-void Memory_system::access(int cycle, int addr) {
-	
+void init_memsys(int argc, char **argv) {
+	int param[10];
+	if (trace) ftrace=fopen("trace.rpt","w");
+	if (argc!=11) {
+		/* Default parameters */
+		param[0] = 64;  // I memory size.
+		param[1] = 32;  // D memory size.
+		param[2] = 8;   // I page size.
+		param[3] = 16;  // D page size.
+		param[4] = 16;  // I cache size
+		param[5] = 4;   // I cache block size
+		param[6] = 4;   // I cache associativity
+		param[7] = 16;  // D cache size
+		param[8] = 4;   // D cache block size 
+		param[9] = 1;   // D cache associativity
+	} else {
+		for (int i=0;i<10;i++) {
+			param[i]=atoi(argv[i+1]);
+		}
+	}
+	i_memsys=new Memory_system('I',param[2],param[0],param[4],param[5],param[6]);
+	d_memsys=new Memory_system('D',param[3],param[1],param[7],param[8],param[9]);
 }
