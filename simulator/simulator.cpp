@@ -8,7 +8,7 @@
 #include "memsys.hpp"
 #define DEBUG
 
-FILE *fout;
+FILE *fout,*freport;
 int num_inst, num_word, cycle;
 char buf[256];
 
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 	if (trace) init_str_const();
 	load_img(PC,num_inst,num_word,sp,pre_sp);
 	fout=fopen("snapshot.rpt","wb");
-	
+	freport=fopen("report.rpt","w");
 	
 	#ifdef DEBUG
 	for (int i=PC>>2;i<(PC>>2)+num_inst;i++) {
@@ -132,5 +132,27 @@ int main(int argc, char *argv[])
 	
 	/* Start simulation */
 	simulate();
+	
+	/* Print report */
+	fprintf( freport, "ICache :\n");
+	fprintf( freport, "# hits: %u\n", i_memsys->cache_hit );
+	fprintf( freport, "# misses: %u\n\n", i_memsys->cache_miss );
+	fprintf( freport, "DCache :\n");
+	fprintf( freport, "# hits: %u\n", d_memsys->cache_hit );
+	fprintf( freport, "# misses: %u\n\n", d_memsys->cache_miss );
+	fprintf( freport, "ITLB :\n");
+	fprintf( freport, "# hits: %u\n", i_memsys->tlb_hit );
+	fprintf( freport, "# misses: %u\n\n", i_memsys->tlb_miss );
+	fprintf( freport, "DTLB :\n");
+	fprintf( freport, "# hits: %u\n", d_memsys->tlb_hit );
+	fprintf( freport, "# misses: %u\n\n", d_memsys->tlb_miss );
+	fprintf( freport, "IPageTable :\n");
+	fprintf( freport, "# hits: %u\n", i_memsys->pgt_hit );
+	fprintf( freport, "# misses: %u\n\n", i_memsys->pgt_miss );
+	fprintf( freport, "DPageTable :\n");
+	fprintf( freport, "# hits: %u\n", d_memsys->pgt_hit );
+	fprintf( freport, "# misses: %u\n\n", d_memsys->pgt_miss );
+	
+	fclose(freport);
 	fclose(fout);
 }

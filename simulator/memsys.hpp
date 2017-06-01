@@ -24,13 +24,12 @@ public:
 	Memory_system(char _id, int _pg_sz, int _mem_sz, int _cache_sz, int _blk_sz, int _cache_ass);
 	void init();
 	void access(int cycle, int addr);
+	int cache_hit, cache_miss, pgt_hit, pgt_miss, tlb_hit, tlb_miss;
 	
 private:
 	char id;
 	int disk_sz;
 	int pg_sz, mem_sz, cache_sz, blk_sz, assoc;
-	int cache_hit, cache_miss, pgt_hit, pgt_miss, tlb_hit, tlb_miss;
-	int tag_pre, tag_post, pg_pre, pg_post;
 	std::vector<Pagetable_entry> pgt;
 	std::vector<Pagetable_entry> tlb;
 	std::vector<Memory_entry> memory;

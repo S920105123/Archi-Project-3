@@ -32,16 +32,13 @@ Memory_system::Memory_system(char _id, int _pg_sz, int _mem_sz, int _cache_sz, i
 	tlb.resize(num_tlb_entry);
 	pgt.resize(num_pgt_entry);
 	init();
-	
-	/* Mask */
-	tag_post=INT_MAX%num_cache_entry;
-	tag_pre=~tag_post;
-	pg_post=INT_MAX%num_pgt_entry;
-	pg_pre=~pg_post;
 }
 
 void Memory_system::init() {
 	/* Cold start */
+	pgt_hit=pgt_miss=0;
+	tlb_hit=tlb_miss=0;
+	cache_hit=cache_miss=0;
 	for (int i=0;i<memory.size();i++) {
 		memory[i].valid=false;
 	}
@@ -202,7 +199,7 @@ void Memory_system::cache_insert(int addr) {
 	}
 	if (num_one==assoc) {
 		for (int i=0;i<assoc;i++) {
-			if (cache[idx+i].tag!=tag) {
+			if (assoc==1 || cache[idx+i].tag!=tag) {
 				cache[idx+i].used=false;
 			}
 		}
@@ -224,7 +221,7 @@ void Memory_system::access(int cycle, int addr) {
 	int where=-1;
 	bool found;
 	
-	fprintf(stderr,"Cycle %d, %c access %d...\n",cycle,id,addr);
+	fprintf(stderr,"Cycle %d, %c access %d...%d\n",cycle,id,addr,pgt_hit);
 	/* Table looking up */
 	vpn=addr/pg_sz;
 	ppn=tlb_find(cycle,vpn);
@@ -233,12 +230,13 @@ void Memory_system::access(int cycle, int addr) {
 		ppn=pgt_find(cycle,vpn);
 		if (ppn==NOT_FOUND) {
 			pgt_miss++;
+			cache_miss++;
 			ppn=pgt_insert(cycle,vpn);
-      fprintf(ftrace," Disk ");
+    		fprintf(ftrace," Disk ");
 			addr=(ppn*pg_sz)|(addr%pg_sz);
-      cache_insert(addr);
-      tlb_insert(cycle,vpn,ppn);
-      return;
+			cache_insert(addr);
+			tlb_insert(cycle,vpn,ppn);
+			return;
 		} else {
 			pgt_hit++;
 			where=1;
@@ -246,7 +244,7 @@ void Memory_system::access(int cycle, int addr) {
 		tlb_insert(cycle,vpn,ppn);
 	} else {
 		tlb_hit++;
-		pgt_hit++;
+		//pgt_hit++;
 		where=0;
 	}
 	
