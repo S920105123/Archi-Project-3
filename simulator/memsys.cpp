@@ -163,7 +163,7 @@ bool Memory_system::cache_find(int addr) {
 	}
 	if (num_one==assoc) {
 		for (int i=0;i<assoc;i++) {
-			if (cache[idx+i].tag!=tag) {
+			if (assoc==1 || cache[idx+i].tag!=tag) {
 				cache[idx+i].used=false;
 			}
 		}
@@ -209,8 +209,10 @@ void Memory_system::cache_insert(int addr) {
 void Memory_system::cache_erase(int ppn) {
 	int num_set=cache.size()/assoc;
 	for (int i=0;i<cache.size();i++) {
-		int set_idx=i/assoc, addr=(cache[i].tag*num_set)|set_idx;
+		int set_idx=i/assoc, addr=((cache[i].tag*num_set)|set_idx)*blk_sz;
+		fprintf(stderr,"Try %d...\n",addr);
 		if (cache[i].valid && addr/pg_sz==ppn) {
+			fprintf(stderr,"Erase %d\n",addr);	
 			cache[i].valid=false;
 		}
 	}
