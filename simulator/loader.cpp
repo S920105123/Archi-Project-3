@@ -90,30 +90,30 @@ void load_img(int &PC, int &num_inst, int &num_word, int &sp, int &pre_sp)
 {
 	/* This function load iimage & dimage then reset instruction set(inst),
 	   stack(stk), initial PC, number of instructions and stack pointer(sp).  */
-	int word,i;
+	int word,i,len;
 	FILE *i_img, *d_img;
 	
 	d_img=fopen("dimage.bin","rb");
 	i_img=fopen("iimage.bin","rb");
 	
 	/* Load instruction image. */
-	fread((char*)&PC,4,1,i_img);
-	fread((char*)&num_inst,4,1,i_img);
+	len=fread((char*)&PC,4,1,i_img);
+	len=fread((char*)&num_inst,4,1,i_img);
 	PC=btol(PC);
 	num_inst=btol(num_inst);
 	for (i=PC/4;i<PC/4+num_inst;i++) {
-		fread((char*)&word,4,1,i_img);
+		len=fread((char*)&word,4,1,i_img);
 		parse(&inst[i],word);
 	}
 	
 	/* Load memory data image. */
-	fread((char*)&sp,4,1,d_img);
-	fread((char*)&num_word,4,1,d_img);
+	len=fread((char*)&sp,4,1,d_img);
+	len=fread((char*)&num_word,4,1,d_img);
 	sp=btol(sp);
 	pre_sp=sp;
 	num_word=btol(num_word);
 	for (i=0;i<num_word;i++) {
-		fread((char*)&mem[i],4,1,d_img);
+		len=fread((char*)&mem[i],4,1,d_img);
 	}
 	
 	fclose(i_img);
