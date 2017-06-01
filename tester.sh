@@ -23,9 +23,9 @@ do
 	./CMP
 	cd ..
 	diff ./golden/snapshot.rpt ./simulator/snapshot.rpt > diff_snapshot.tmp
-	diff ./golden/report.rpt ./simulator/report.rpt > report.tmp
-	diff ./golden/trace.rpt ./simulator/trace.rpt > trace.tmp
-	if [ "$(cat diff_snapshot.tmp)" = "" -a "$(cat trace.tmp)" = "" -a "$(cat report.tmp)" = "" ]; then
+	diff ./golden/report.rpt ./simulator/report.rpt > diff_report.tmp
+	diff ./golden/trace.rpt ./simulator/trace.rpt > diff_trace.tmp
+	if [ "$(cat diff_snapshot.tmp)" = "" -a "$(cat diff_trace.tmp)" = "" -a "$(cat diff_report.tmp)" = "" ]; then
 		echo -e "   Testcase: ${dir}\t- ${GREEN}[Accecpted]${NC}..."
 	else
 		echo -e "   Testcase: ${dir}\t- ${RED}[Wrong Answer]${NC}..."

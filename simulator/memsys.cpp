@@ -234,7 +234,11 @@ void Memory_system::access(int cycle, int addr) {
 		if (ppn==NOT_FOUND) {
 			pgt_miss++;
 			ppn=pgt_insert(cycle,vpn);
-			where=2;
+      fprintf(ftrace," Disk ");
+			addr=(ppn*pg_sz)|(addr%pg_sz);
+      cache_insert(addr);
+      tlb_insert(cycle,vpn,ppn);
+      return;
 		} else {
 			pgt_hit++;
 			where=1;
@@ -260,8 +264,7 @@ void Memory_system::access(int cycle, int addr) {
 	/* Print page table information */
 	if (trace) {
 		if (where==0) fprintf(ftrace," %cTLB ",id);
-		else if (where==1) fprintf(ftrace," %cPageTable ",id);
-		else fprintf(ftrace," Disk ",id);
+		else fprintf(ftrace," %cPageTable ",id);
 	}
 }
 

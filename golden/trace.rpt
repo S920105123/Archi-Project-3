@@ -1,0 +1,46 @@
+1, addi : Disk  ; 
+2, addi : ITLB  ; 
+3, beq  : Disk  ; 
+4, lw   : ITLB  ;  Disk 
+5, sw   : Disk  ;  DTLB 
+6, add  : ITLB  ; 
+7, j    : Disk  ; 
+8, beq  : ITLB  ; 
+9, lw   : ICache  ITLB  ;  DTLB 
+10, sw   : ITLB  ;  Disk 
+11, add  : ITLB  ; 
+12, j    : ICache  ITLB  ; 
+13, beq  : ITLB  ; 
+14, lw   : ITLB  ;  DTLB 
+15, sw   : ICache  ITLB  ;  DTLB 
+16, add  : ITLB  ; 
+17, j    : ITLB  ; 
+18, beq  : ICache  ITLB  ; 
+19, add  : ITLB  ; 
+20, add  : Disk  ; 
+21, beq  : ITLB  ; 
+22, lw   : Disk  ;  DTLB 
+23, add  : ITLB  ; 
+24, j    : Disk  ; 
+25, beq  : ICache  ITLB  ; 
+26, lw   : ICache  ITLB  ;  DTLB 
+27, add  : ICache  ITLB  ; 
+28, j    : ICache  ITLB  ; 
+29, beq  : ICache  ITLB  ; 
+30, lw   : ICache  ITLB  ;  DCache  DTLB 
+31, add  : ICache  ITLB  ; 
+32, j    : ICache  ITLB  ; 
+33, beq  : ICache  ITLB  ; 
+34, lw   : ICache  ITLB  ;  DCache  DTLB 
+35, add  : ICache  ITLB  ; 
+36, j    : ICache  ITLB  ; 
+37, beq  : ICache  ITLB  ; 
+38, lw   : ICache  ITLB  ;  DTLB 
+39, add  : ICache  ITLB  ; 
+40, j    : ICache  ITLB  ; 
+41, beq  : ICache  ITLB  ; 
+42, lw   : ICache  ITLB  ;  DTLB 
+43, add  : ICache  ITLB  ; 
+44, j    : ICache  ITLB  ; 
+45, beq  : ICache  ITLB  ; 
+46, halt : Disk  ; 
