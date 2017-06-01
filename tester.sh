@@ -6,32 +6,44 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m'
 
-for dir in $(ls ./open)
+OLD=$IFS
+IFS="
+"
+
+for conf in $(cat permutation.txt)
 do
-	cp ./open/${dir}/dimage.bin ./simulator/dimage.bin
-	cp ./open/${dir}/iimage.bin ./simulator/iimage.bin
-	cp ./open/${dir}/dimage.bin ./golden/dimage.bin
-    cp ./open/${dir}/iimage.bin ./golden/iimage.bin
-	cd ./golden
-	./CMP > tmp
-	if [ "$(cat tmp)" != "" ]; then
-		cd ..;	
-		echo -e "   Testcase: ${dir}       \t- ${YELLOW}[Illegal]${NC}..."
-		continue;
-	fi
-	cd ../simulator
-	./CMP
-	cd ..
-	diff ./golden/snapshot.rpt ./simulator/snapshot.rpt > diff_snapshot.tmp
-	diff ./golden/report.rpt ./simulator/report.rpt > diff_report.tmp
-	diff ./golden/trace.rpt ./simulator/trace.rpt > diff_trace.tmp
-	if [ "$(cat diff_snapshot.tmp)" = "" -a "$(cat diff_trace.tmp)" = "" -a "$(cat diff_report.tmp)" = "" ]; then
-		echo -e "   Testcase: ${dir}       \t- ${GREEN}[Accecpted]${NC}..."
-	else
-		echo -e "   Testcase: ${dir}       \t- ${RED}[Wrong Answer]${NC}..."
-		echo "${dir}" > who
-		break
-	fi
+	echo "Testing ${conf}"
+	IFS=$OLD
+	for dir in $(ls ./open)
+	do
+		cp ./open/${dir}/dimage.bin ./simulator/dimage.bin
+		cp ./open/${dir}/iimage.bin ./simulator/iimage.bin
+		cp ./open/${dir}/dimage.bin ./golden/dimage.bin
+		cp ./open/${dir}/iimage.bin ./golden/iimage.bin
+		cd ./golden
+		./CMP ${conf} > tmp
+		if [ "$(cat tmp)" != "" ]; then
+			cd ..;	
+			echo -e "   Testcase: ${dir}\t- ${YELLOW}[Illegal]${NC}... ($(cat golden/tmp))"
+			#rm -r open/${dir}
+			continue;
+		fi
+		cd ../simulator
+		./CMP ${conf}
+		cd ..
+		diff ./golden/snapshot.rpt ./simulator/snapshot.rpt > diff_snapshot.tmp
+		diff ./golden/report.rpt ./simulator/report.rpt > diff_report.tmp
+		diff ./golden/trace.rpt ./simulator/trace.rpt > diff_trace.tmp
+		if [ "$(cat diff_snapshot.tmp)" = "" -a "$(cat diff_trace.tmp)" = "" -a "$(cat diff_report.tmp)" = "" ]; then
+			echo -e "   Testcase: ${dir}\t- ${GREEN}[Accecpted]${NC}..."
+		else
+			echo -e "   Testcase: ${dir}\t- ${RED}[Wrong Answer]${NC}..."
+			echo "${dir}" > who
+			exit 1
+		fi
+	done
+	IFS="
+"
 done
 
 time_end=$(date +%s%N)
