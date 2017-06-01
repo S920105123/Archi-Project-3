@@ -17,4 +17,4 @@ const.o:
 	g++ -std=c++11 const.hpp const.cpp -O3 -c
 
 clean:
-	rm *.o *.gch *.stack_dump single_cycle
+	rm *.o *.gch *.stack_dump CMP

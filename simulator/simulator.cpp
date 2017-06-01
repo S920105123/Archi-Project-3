@@ -6,7 +6,7 @@
 #include "loader.hpp"
 #include "datapath.hpp"
 #include "memsys.hpp"
-//#define DEBUG
+#define DEBUG
 
 FILE *fout;
 int num_inst, num_word, cycle;
@@ -72,8 +72,6 @@ void simulate()
 		}
 		cycle++;
 		if (trace) fprintf(ftrace,"%d, ",cycle);
-		i_memsys->access(cycle,PC);
-		if (trace) fprintf(ftrace," ; ");
 		//std::cerr<<"cycle "<<std::dec<<cycle<<": ";
 		//print_inst(&inst[idx]);
 		if (opcode==0) {
@@ -82,6 +80,8 @@ void simulate()
 				return;
 			}
 			if (trace) fprintf(ftrace,"%s:",inst_str_r[funct].c_str());
+			i_memsys->access(cycle,PC);
+			if (trace) fprintf(ftrace," ; ");
 			(*R_func[funct])();
 		} else {
 			if (!legal[opcode]) {
@@ -89,6 +89,8 @@ void simulate()
 				return;
 			}
 			if (trace) fprintf(ftrace,"%s:",inst_str[opcode].c_str());
+			i_memsys->access(cycle,PC);
+			if (trace) fprintf(ftrace," ; ");
 			(*func[opcode])();
 		}
 		output();
@@ -98,10 +100,9 @@ void simulate()
 		funct=inst[idx].funct;
 		if (trace) fprintf(ftrace,"\n");
 	}
-	if (trace) fprintf(ftrace,"%d, halt\t: ",cycle);
+	if (trace) fprintf(ftrace,"%d, halt : ",cycle+1);
 	i_memsys->access(cycle,PC);
-	if (trace) fprintf(ftrace,";\t");
-	if (trace) fprintf(ftrace,"\n");
+	if (trace) fprintf(ftrace," ; \n");
 }
 
 int main(int argc, char *argv[])

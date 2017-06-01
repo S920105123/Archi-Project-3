@@ -48,6 +48,7 @@ private:
 	/* Cache operations */
 	bool cache_find(int addr);
 	void cache_insert(int addr);
+	void cache_erase(int ppn);
 };
 
 void init_memsys(int argc, char **argv);

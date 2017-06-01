@@ -1,7 +1,11 @@
 #include "datapath.hpp"
 #include "loader.hpp"
+#include "memsys.hpp"
 #include <climits>
 #include <queue>
+
+extern int cycle;
+extern Memory_system *d_memsys;
 
 /* Convesion between big/little endian */
 extern int btol(int target);
@@ -187,6 +191,7 @@ void inst_lw() {
 		reg[rt]=btol(reg[rt]);
 		change.push(rt);
 	}
+	d_memsys->access(cycle,offset);
 	PC=PC+4;
 }
 void inst_lh() {
@@ -197,6 +202,7 @@ void inst_lh() {
 		reg[rt]=h_btol((short)reg[rt]);
 		change.push(rt);
 	}
+	d_memsys->access(cycle,offset);
 	PC=PC+4;
 }
 void inst_lhu() {
@@ -208,6 +214,7 @@ void inst_lhu() {
 		reg[rt]=reg[rt]&0x0000FFFF;  // Just in case.
 		change.push(rt);
 	}
+	d_memsys->access(cycle,offset);
 	PC=PC+4;
 }
 void inst_lb() {
@@ -216,6 +223,7 @@ void inst_lb() {
 		reg[rt]=*((char*)mem+pre_reg[rs]+immediate);
 		change.push(rt);
 	}
+	d_memsys->access(cycle,pre_reg[rs]+immediate);
 	PC=PC+4;
 }
 void inst_lbu() {
@@ -225,6 +233,7 @@ void inst_lbu() {
 		reg[rt]=reg[rt]&0x000000FF;  // Just in case.
 		change.push(rt);
 	}
+	d_memsys->access(cycle,pre_reg[rs]+immediate);
 	PC=PC+4;
 }
 void inst_sw() {
@@ -233,6 +242,7 @@ void inst_sw() {
 	if (rt!=0) {
 		mem[offset>>2]=btol(reg[rt]);
 	}
+	d_memsys->access(cycle,offset);
 	PC=PC+4;
 }
 void inst_sh() {
@@ -241,6 +251,7 @@ void inst_sh() {
 	if (rt!=0) {
 		*((short*)mem+(offset>>1))=h_btol(reg[rt]&0x0000FFFF);
 	}
+	d_memsys->access(cycle,offset);
 	PC=PC+4;
 }
 void inst_sb() {
@@ -248,6 +259,7 @@ void inst_sb() {
 	if (rt!=0) {
 		*((char*)mem+pre_reg[rs]+immediate)=reg[rt]&0x000000FF;
 	}
+	d_memsys->access(cycle,pre_reg[rs]+immediate);
 	PC=PC+4;
 }
 void inst_lui() {

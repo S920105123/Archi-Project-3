@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 
 FILE *ftrace; 
 Memory_system *i_memsys, *d_memsys;
@@ -24,7 +25,7 @@ Memory_system::Memory_system(char _id, int _pg_sz, int _mem_sz, int _cache_sz, i
 	/* Allocation */
 	int num_pgt_entry=disk_sz/pg_sz;
 	int num_tlb_entry=num_pgt_entry/4;
-	int num_cache_entry=cache_sz/blk_sz/assoc;
+	int num_cache_entry=cache_sz/blk_sz;
 	int num_mem_entry=mem_sz/pg_sz;
 	memory.resize(num_mem_entry);
 	cache.resize(num_cache_entry);
@@ -141,6 +142,7 @@ int Memory_system::pgt_insert(int cycle, int vpn) {
 	pgt[vpn].ppn=pgt[pos].ppn;
 	pgt[vpn].time=cycle;
 	tlb_erase(pos);
+	cache_erase(pgt[pos].ppn);
 	return pgt[vpn].ppn;
 }
 
@@ -207,8 +209,59 @@ void Memory_system::cache_insert(int addr) {
 	}
 }
 
+void Memory_system::cache_erase(int ppn) {
+	int num_set=cache.size()/assoc;
+	for (int i=0;i<cache.size();i++) {
+		int set_idx=i/assoc, addr=(cache[i].tag*num_set)|set_idx;
+		if (cache[i].valid && addr/pg_sz==ppn) {
+			cache[i].valid=false;
+		}
+	}
+}
+
 void Memory_system::access(int cycle, int addr) {
 	int vpn,ppn;
+	int where=-1;
+	bool found;
+	
+	/* Table looking up */
+	vpn=addr/pg_sz;
+	ppn=tlb_find(cycle,vpn);
+	if (ppn==NOT_FOUND) {
+		tlb_miss++;
+		ppn=pgt_find(cycle,vpn);
+		if (ppn==NOT_FOUND) {
+			pgt_miss++;
+			ppn=pgt_insert(cycle,vpn);
+			where=2;
+		} else {
+			pgt_hit++;
+			where=1;
+		}
+		tlb_insert(cycle,vpn,ppn);
+	} else {
+		tlb_hit++;
+		pgt_hit++;
+		where=0;
+	}
+	
+	/* Got physical address, find in memory */
+	addr=(ppn*pg_sz)|(addr%pg_sz);
+	found=cache_find(addr);
+	if (!found) {
+		cache_miss++;
+		cache_insert(addr);
+	} else {
+		cache_hit++;
+		if (trace) fprintf(ftrace," %cCache ",id);
+	}
+	
+	/* Print page table information */
+	if (trace) {
+		if (where==0) fprintf(ftrace," %cTLB ",id);
+		else if (where==1) fprintf(ftrace," %cPageTable ",id);
+		else fprintf(ftrace," %cDisk ",id);
+	}
 }
 
 void init_memsys(int argc, char **argv) {
