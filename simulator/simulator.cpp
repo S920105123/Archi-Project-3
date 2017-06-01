@@ -100,7 +100,7 @@ void simulate()
 		funct=inst[idx].funct;
 		if (trace) fprintf(ftrace,"\n");
 	}
-	if (trace) fprintf(ftrace,"%d, halt : ",cycle+1);
+	if (trace) fprintf(ftrace,"%d, halt :",cycle+1);
 	i_memsys->access(cycle,PC);
 	if (trace) fprintf(ftrace," ; \n");
 }

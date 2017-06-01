@@ -1,4 +1,4 @@
-all: simulator.o datapath.o loader.o const.o error.o memsys.o
+all: simulator.o datapath.o loader.o const.o memsys.o
 	g++ -std=c++11 simulator.o datapath.o loader.o const.o memsys.o -O3 -o CMP
 
 memsys.o:

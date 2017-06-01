@@ -90,7 +90,7 @@ void Memory_system::tlb_insert(int cycle, int vpn, int ppn) {
 			entry.ppn=ppn;
 			return;
 		}
-		if (entry.time<lru) {
+		if (entry.valid && entry.time<lru) {
 			lru=entry.time;
 			pos=i;
 		}
@@ -156,17 +156,17 @@ bool Memory_system::cache_find(int addr) {
 	tag=addr/num_set;
 	
 	for (int i=0;i<assoc;i++) {
-		if (cache[idx+i].valid && cache[idx+i].tag==tag) {
+		if (miss && cache[idx+i].valid && cache[idx+i].tag==tag) {
 			cache[idx+i].used=true;
 			miss=false;
 		}
-		if (cache[idx+i].used) {
+		if (cache[idx+i].valid && cache[idx+i].used) {
 			num_one++;
 		}
 	}
 	if (num_one==assoc) {
 		for (int i=0;i<assoc;i++) {
-			if (cache[idx+i].valid && cache[idx+i].tag!=tag) {
+			if (cache[idx+i].tag!=tag) {
 				cache[idx+i].used=false;
 			}
 		}
@@ -182,7 +182,7 @@ void Memory_system::cache_insert(int addr) {
 	tag=addr/num_set;
 	
 	for (int i=0;i<assoc;i++) {
-		if (!cache[idx+i].valid) {
+		if (!insert && !cache[idx+i].valid) {
 			cache[idx+i].valid=true;
 			cache[idx+i].used=true;
 			cache[idx+i].tag=tag;
@@ -191,7 +191,7 @@ void Memory_system::cache_insert(int addr) {
 		if (pos==-1 && cache[idx+i].valid && !cache[idx+i].used) {
 			pos=idx+i;
 		}
-		if (cache[idx+i].used) {
+		if (cache[idx+i].valid && cache[idx+i].used) {
 			num_one++;
 		}
 	}
@@ -202,7 +202,7 @@ void Memory_system::cache_insert(int addr) {
 	}
 	if (num_one==assoc) {
 		for (int i=0;i<assoc;i++) {
-			if (cache[idx+i].valid && cache[idx+i].tag!=tag) {
+			if (cache[idx+i].tag!=tag) {
 				cache[idx+i].used=false;
 			}
 		}
@@ -224,6 +224,7 @@ void Memory_system::access(int cycle, int addr) {
 	int where=-1;
 	bool found;
 	
+	fprintf(stderr,"Cycle %d, %c access %d...\n",cycle,id,addr);
 	/* Table looking up */
 	vpn=addr/pg_sz;
 	ppn=tlb_find(cycle,vpn);
@@ -260,7 +261,7 @@ void Memory_system::access(int cycle, int addr) {
 	if (trace) {
 		if (where==0) fprintf(ftrace," %cTLB ",id);
 		else if (where==1) fprintf(ftrace," %cPageTable ",id);
-		else fprintf(ftrace," %cDisk ",id);
+		else fprintf(ftrace," Disk ",id);
 	}
 }
 
