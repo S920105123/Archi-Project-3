@@ -1,0 +1,208 @@
+1092, lw   : ITLB  ;  DPageTable 
+1237, lw   : ICache  ITLB  ;  DPageTable 
+1407, lw   : ICache  ITLB  ;  DPageTable 
+1581, lw   : ICache  ITLB  ;  DPageTable 
+1757, lw   : ICache  ITLB  ;  DPageTable 
+1931, lw   : ICache  ITLB  ;  DPageTable 
+2103, lw   : ICache  ITLB  ;  DPageTable 
+2154, lw   : ITLB  ;  DPageTable 
+2299, lw   : ICache  ITLB  ;  DPageTable 
+2467, lw   : ICache  ITLB  ;  DPageTable 
+2641, lw   : ICache  ITLB  ;  DPageTable 
+2815, lw   : ICache  ITLB  ;  DPageTable 
+2989, lw   : ICache  ITLB  ;  DCache  DPageTable 
+3159, lw   : ICache  ITLB  ;  DPageTable 
+3199, lw   : ITLB  ;  DPageTable 
+3342, lw   : ICache  ITLB  ;  DPageTable 
+3510, lw   : ICache  ITLB  ;  DPageTable 
+3684, lw   : ICache  ITLB  ;  DPageTable 
+3858, lw   : ICache  ITLB  ;  DPageTable 
+4030, lw   : ICache  ITLB  ;  DPageTable 
+4202, lw   : ICache  ITLB  ;  DPageTable 
+4231, lw   : ITLB  ;  DCache  DPageTable 
+4374, lw   : ICache  ITLB  ;  DPageTable 
+4544, lw   : ICache  ITLB  ;  DPageTable 
+4718, lw   : ICache  ITLB  ;  DPageTable 
+4892, lw   : ICache  ITLB  ;  DPageTable 
+5064, lw   : ICache  ITLB  ;  DPageTable 
+5236, lw   : ICache  ITLB  ;  DPageTable 
+5254, lw   : ITLB  ;  DPageTable 
+5393, lw   : ICache  ITLB  ;  DPageTable 
+5559, lw   : ICache  ITLB  ;  DCache  DPageTable 
+5733, lw   : ICache  ITLB  ;  DPageTable 
+5905, lw   : ICache  ITLB  ;  DPageTable 
+6077, lw   : ICache  ITLB  ;  DPageTable 
+6254, lw   : ITLB  ;  DPageTable 
+6391, lw   : ICache  ITLB  ;  DPageTable 
+6557, lw   : ICache  ITLB  ;  DPageTable 
+6729, lw   : ICache  ITLB  ;  DPageTable 
+6901, lw   : ICache  ITLB  ;  DPageTable 
+7073, lw   : ICache  ITLB  ;  DPageTable 
+7239, lw   : ITLB  ;  DPageTable 
+7372, lw   : ICache  ITLB  ;  DPageTable 
+7538, lw   : ICache  ITLB  ;  DPageTable 
+7710, lw   : ICache  ITLB  ;  DPageTable 
+7882, lw   : ICache  ITLB  ;  DPageTable 
+8052, lw   : ICache  ITLB  ;  DPageTable 
+8209, lw   : ITLB  ;  DPageTable 
+8344, lw   : ICache  ITLB  ;  DPageTable 
+8510, lw   : ICache  ITLB  ;  DPageTable 
+8682, lw   : ICache  ITLB  ;  DPageTable 
+8852, lw   : ICache  ITLB  ;  DPageTable 
+9022, lw   : ICache  ITLB  ;  DPageTable 
+9168, lw   : ITLB  ;  DPageTable 
+9305, lw   : ICache  ITLB  ;  DPageTable 
+9467, lw   : ICache  ITLB  ;  DPageTable 
+9641, lw   : ICache  ITLB  ;  DPageTable 
+9811, lw   : ICache  ITLB  ;  DPageTable 
+9981, lw   : ICache  ITLB  ;  DCache  DPageTable 
+10114, lw   : ITLB  ;  DPageTable 
+10251, lw   : ICache  ITLB  ;  DPageTable 
+10413, lw   : ICache  ITLB  ;  DPageTable 
+10587, lw   : ICache  ITLB  ;  DCache  DPageTable 
+10757, lw   : ICache  ITLB  ;  DPageTable 
+10925, lw   : ICache  ITLB  ;  DCache  DPageTable 
+11047, lw   : ITLB  ;  DPageTable 
+11184, lw   : ICache  ITLB  ;  DPageTable 
+11344, lw   : ICache  ITLB  ;  DPageTable 
+11518, lw   : ICache  ITLB  ;  DCache  DPageTable 
+11686, lw   : ICache  ITLB  ;  DPageTable 
+11854, lw   : ICache  ITLB  ;  DCache  DPageTable 
+11965, lw   : ITLB  ;  DPageTable 
+12102, lw   : ICache  ITLB  ;  DPageTable 
+12262, lw   : ICache  ITLB  ;  DPageTable 
+12432, lw   : ICache  ITLB  ;  DPageTable 
+12602, lw   : ICache  ITLB  ;  DPageTable 
+12768, lw   : ICache  ITLB  ;  DCache  DPageTable 
+12870, lw   : ITLB  ;  DPageTable 
+13007, lw   : ICache  ITLB  ;  DPageTable 
+13163, lw   : ICache  ITLB  ;  DPageTable 
+13333, lw   : ICache  ITLB  ;  DPageTable 
+13505, lw   : ICache  ITLB  ;  DPageTable 
+13671, lw   : ICache  ITLB  ;  DPageTable 
+13762, lw   : ITLB  ;  DPageTable 
+13897, lw   : ICache  ITLB  ;  DPageTable 
+14051, lw   : ICache  ITLB  ;  DPageTable 
+14223, lw   : ICache  ITLB  ;  DPageTable 
+14395, lw   : ICache  ITLB  ;  DPageTable 
+14559, lw   : ICache  ITLB  ;  DPageTable 
+14639, lw   : ITLB  ;  DPageTable 
+14774, lw   : ICache  ITLB  ;  DPageTable 
+14930, lw   : ICache  ITLB  ;  DCache  DPageTable 
+15098, lw   : ICache  ITLB  ;  DPageTable 
+15266, lw   : ICache  ITLB  ;  DPageTable 
+15430, lw   : ICache  ITLB  ;  DPageTable 
+15499, lw   : ITLB  ;  DPageTable 
+15634, lw   : ICache  ITLB  ;  DPageTable 
+15792, lw   : ICache  ITLB  ;  DCache  DPageTable 
+15960, lw   : ICache  ITLB  ;  DPageTable 
+16124, lw   : ICache  ITLB  ;  DPageTable 
+16288, lw   : ICache  ITLB  ;  DPageTable 
+16348, lw   : ITLB  ;  DPageTable 
+16481, lw   : ICache  ITLB  ;  DPageTable 
+16641, lw   : ICache  ITLB  ;  DPageTable 
+16809, lw   : ICache  ITLB  ;  DPageTable 
+16971, lw   : ICache  ITLB  ;  DPageTable 
+17135, lw   : ICache  ITLB  ;  DPageTable 
+17184, lw   : ITLB  ;  DPageTable 
+17317, lw   : ICache  ITLB  ;  DPageTable 
+17479, lw   : ICache  ITLB  ;  DPageTable 
+17647, lw   : ICache  ITLB  ;  DPageTable 
+17809, lw   : ICache  ITLB  ;  DPageTable 
+17973, lw   : ICache  ITLB  ;  DCache  DPageTable 
+18011, lw   : ITLB  ;  DPageTable 
+18142, lw   : ICache  ITLB  ;  DPageTable 
+18306, lw   : ICache  ITLB  ;  DPageTable 
+18472, lw   : ICache  ITLB  ;  DPageTable 
+18634, lw   : ICache  ITLB  ;  DPageTable 
+18800, lw   : ICache  ITLB  ;  DCache  DPageTable 
+18825, lw   : ITLB  ;  DPageTable 
+18956, lw   : ICache  ITLB  ;  DPageTable 
+19120, lw   : ICache  ITLB  ;  DPageTable 
+19288, lw   : ICache  ITLB  ;  DPageTable 
+19450, lw   : ICache  ITLB  ;  DPageTable 
+19614, lw   : ICache  ITLB  ;  DCache  DPageTable 
+19630, lw   : ITLB  ;  DPageTable 
+19763, lw   : ICache  ITLB  ;  DPageTable 
+19925, lw   : ICache  ITLB  ;  DPageTable 
+20091, lw   : ICache  ITLB  ;  DPageTable 
+20255, lw   : ICache  ITLB  ;  DPageTable 
+20424, lw   : ITLB  ;  DCache  DPageTable 
+20555, lw   : ICache  ITLB  ;  DPageTable 
+20719, lw   : ICache  ITLB  ;  DPageTable 
+20881, lw   : ICache  ITLB  ;  DPageTable 
+21047, lw   : ICache  ITLB  ;  DPageTable 
+21205, lw   : ITLB  ;  DCache  DPageTable 
+21336, lw   : ICache  ITLB  ;  DPageTable 
+21496, lw   : ICache  ITLB  ;  DPageTable 
+21658, lw   : ICache  ITLB  ;  DPageTable 
+21822, lw   : ICache  ITLB  ;  DPageTable 
+21971, lw   : ITLB  ;  DCache  DPageTable 
+22104, lw   : ICache  ITLB  ;  DPageTable 
+22264, lw   : ICache  ITLB  ;  DPageTable 
+22422, lw   : ICache  ITLB  ;  DPageTable 
+22588, lw   : ICache  ITLB  ;  DPageTable 
+22726, lw   : ITLB  ;  DCache  DPageTable 
+22859, lw   : ICache  ITLB  ;  DPageTable 
+23021, lw   : ICache  ITLB  ;  DPageTable 
+23179, lw   : ICache  ITLB  ;  DPageTable 
+23343, lw   : ICache  ITLB  ;  DPageTable 
+23468, lw   : ITLB  ;  DCache  DPageTable 
+23599, lw   : ICache  ITLB  ;  DPageTable 
+23757, lw   : ICache  ITLB  ;  DPageTable 
+23917, lw   : ICache  ITLB  ;  DPageTable 
+24079, lw   : ICache  ITLB  ;  DPageTable 
+24195, lw   : ITLB  ;  DCache  DPageTable 
+24326, lw   : ICache  ITLB  ;  DPageTable 
+24484, lw   : ICache  ITLB  ;  DPageTable 
+24644, lw   : ICache  ITLB  ;  DPageTable 
+24806, lw   : ICache  ITLB  ;  DPageTable 
+24911, lw   : ITLB  ;  DPageTable 
+25044, lw   : ICache  ITLB  ;  DPageTable 
+25200, lw   : ICache  ITLB  ;  DCache  DPageTable 
+25362, lw   : ICache  ITLB  ;  DPageTable 
+25522, lw   : ICache  ITLB  ;  DPageTable 
+25618, lw   : ITLB  ;  DPageTable 
+25751, lw   : ICache  ITLB  ;  DPageTable 
+25907, lw   : ICache  ITLB  ;  DCache  DPageTable 
+26071, lw   : ICache  ITLB  ;  DPageTable 
+26229, lw   : ICache  ITLB  ;  DPageTable 
+26316, lw   : ITLB  ;  DPageTable 
+26449, lw   : ICache  ITLB  ;  DPageTable 
+26607, lw   : ICache  ITLB  ;  DCache  DPageTable 
+26769, lw   : ICache  ITLB  ;  DPageTable 
+26929, lw   : ICache  ITLB  ;  DPageTable 
+27005, lw   : ITLB  ;  DPageTable 
+27140, lw   : ICache  ITLB  ;  DPageTable 
+27298, lw   : ICache  ITLB  ;  DCache  DPageTable 
+27458, lw   : ICache  ITLB  ;  DPageTable 
+27618, lw   : ICache  ITLB  ;  DPageTable 
+27685, lw   : ITLB  ;  DPageTable 
+27822, lw   : ICache  ITLB  ;  DPageTable 
+27976, lw   : ICache  ITLB  ;  DCache  DPageTable 
+28136, lw   : ICache  ITLB  ;  DPageTable 
+28294, lw   : ICache  ITLB  ;  DPageTable 
+28352, lw   : ITLB  ;  DPageTable 
+28489, lw   : ICache  ITLB  ;  DPageTable 
+28645, lw   : ICache  ITLB  ;  DCache  DPageTable 
+28805, lw   : ICache  ITLB  ;  DPageTable 
+28963, lw   : ICache  ITLB  ;  DPageTable 
+29010, lw   : ITLB  ;  DCache  DPageTable 
+29149, lw   : ICache  ITLB  ;  DPageTable 
+29303, lw   : ICache  ITLB  ;  DPageTable 
+29463, lw   : ICache  ITLB  ;  DCache  DPageTable 
+29621, lw   : ICache  ITLB  ;  DCache  DPageTable 
+29657, lw   : ITLB  ;  DCache  DPageTable 
+29796, lw   : ICache  ITLB  ;  DCache  DPageTable 
+29950, lw   : ICache  ITLB  ;  DCache  DPageTable 
+30110, lw   : ICache  ITLB  ;  DCache  DPageTable 
+30266, lw   : ICache  ITLB  ;  DCache  DPageTable 
+30291, lw   : ITLB  ;  DCache  DPageTable 
+30422, lw   : ICache  ITLB  ;  DCache  DPageTable 
+30578, lw   : ICache  ITLB  ;  DCache  DPageTable 
+30736, lw   : ICache  ITLB  ;  DCache  DPageTable 
+30892, lw   : ICache  ITLB  ;  DCache  DPageTable 
+30908, lw   : ITLB  ;  DCache  DPageTable 
+31041, lw   : ICache  ITLB  ;  DCache  DPageTable 
+31195, lw   : ICache  ITLB  ;  DCache  DPageTable 
+31353, lw   : ICache  ITLB  ;  DCache  DPageTable 

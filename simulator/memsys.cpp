@@ -102,7 +102,6 @@ void Memory_system::tlb_insert(int cycle, int vpn, int ppn) {
 
 int Memory_system::pgt_find(int cycle, int vpn) {
 	if (pgt[vpn].valid) {
-		pgt_hit++;
 		pgt[vpn].time=cycle;
 		return pgt[vpn].ppn;
 	} else {
@@ -149,7 +148,7 @@ bool Memory_system::cache_find(int addr) {
 	int num_set=cache.size()/assoc,idx,tag,num_one=0;
 	bool miss=true;
 	addr/=blk_sz;
-	idx=addr%num_set;
+	idx=(addr%num_set)*assoc;
 	tag=addr/num_set;
 	
 	for (int i=0;i<assoc;i++) {
@@ -175,7 +174,7 @@ void Memory_system::cache_insert(int addr) {
 	int num_set=cache.size()/assoc,idx,tag,num_one=0,pos=-1;
 	bool insert=false;
 	addr/=blk_sz;
-	idx=addr%num_set;
+	idx=(addr%num_set)*assoc;
 	tag=addr/num_set;
 	
 	for (int i=0;i<assoc;i++) {
@@ -223,7 +222,7 @@ void Memory_system::access(int cycle, int addr) {
 	int where=-1;
 	bool found;
 	
-	fprintf(stderr,"Cycle %d, %c access %d...\n",cycle,id,addr);
+	//fprintf(stderr,"Cycle %d, %c access %d...\n",cycle,id,addr);
 	/* Table looking up */
 	vpn=addr/pg_sz;
 	ppn=tlb_find(cycle,vpn);

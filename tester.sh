@@ -36,6 +36,7 @@ do
 		diff ./golden/trace.rpt ./simulator/trace.rpt > diff_trace.tmp
 		if [ "$(cat diff_snapshot.tmp)" = "" -a "$(cat diff_trace.tmp)" = "" -a "$(cat diff_report.tmp)" = "" ]; then
 			echo -e "   Testcase: ${dir}\t- ${GREEN}[Accecpted]${NC}..."
+			#cat ./golden/report.rpt
 		else
 			echo -e "   Testcase: ${dir}\t- ${RED}[Wrong Answer]${NC}..."
 			echo "${dir}" > who

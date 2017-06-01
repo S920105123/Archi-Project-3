@@ -79,18 +79,28 @@ void simulate()
 				std::cerr<<"illegal instruction found at 0x"<<std::setw(8)<<std::setfill('0')<<std::hex<<std::uppercase<<PC<<std::endl;
 				return;
 			}
-			if (trace) fprintf(ftrace,"%s:",inst_str_r[funct].c_str());
+      if (trace) fprintf(ftrace,"%s:",inst_str_r[funct].c_str());
 			i_memsys->access(cycle,PC);
-			if (trace) fprintf(ftrace," ; ");
+			if (trace) {
+        fprintf(ftrace," ; ");
+        if (opcode!=LW && opcode!=LHU && opcode!=LH && opcode!=LB && opcode!=LBU && opcode!=SW && opcode!=SH && opcode!=SB) {
+          fprintf(ftrace," Disk ");
+        }
+      }
 			(*R_func[funct])();
 		} else {
 			if (!legal[opcode]) {
 				std::cerr<<"illegal instruction found at 0x"<<std::setw(8)<<std::setfill('0')<<std::hex<<std::uppercase<<PC<<std::endl;
 				return;
 			}
-			if (trace) fprintf(ftrace,"%s:",inst_str[opcode].c_str());
+      if (trace) fprintf(ftrace,"%s:",inst_str[opcode].c_str());
 			i_memsys->access(cycle,PC);
-			if (trace) fprintf(ftrace," ; ");
+			if (trace) {
+        fprintf(ftrace," ; ");
+        if (opcode!=LW && opcode!=LHU && opcode!=LH && opcode!=LB && opcode!=LBU && opcode!=SW && opcode!=SH && opcode!=SB) {
+          fprintf(ftrace," Disk ");
+        }
+      }
 			(*func[opcode])();
 		}
 		output();
@@ -98,11 +108,11 @@ void simulate()
 		idx=PC>>2;
 		opcode=inst[idx].opcode;
 		funct=inst[idx].funct;
-		if (trace) fprintf(ftrace,"\n");
+    if (trace) fprintf(ftrace,"\n");
 	}
 	if (trace) fprintf(ftrace,"%d, halt :",cycle+1);
 	i_memsys->access(cycle,PC);
-	if (trace) fprintf(ftrace," ; \n");
+	if (trace) fprintf(ftrace," ;  Disk \n");
 }
 
 int main(int argc, char *argv[])

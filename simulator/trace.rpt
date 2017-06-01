@@ -1,44 +1,43 @@
-1, addi : Disk  ; 
-2, addi : ICache  ITLB  ; 
-3, jr   : ITLB  ; 
-4, add  : Disk  ; 
-5, addu : ITLB  ; 
-6, sub  : ICache  ITLB  ; 
-7, and  : Disk  ; 
-8, or   : ICache  ITLB  ; 
-9, xor  : ITLB  ; 
-10, nor  : ICache  ITLB  ; 
-11, nand : Disk  ; 
-12, slt  : ICache  ITLB  ; 
-13, sll  : ITLB  ; 
-14, srl  : ICache  ITLB  ; 
-15, sra  : Disk  ; 
-16, mult : ICache  ITLB  ; 
-17, mult : ITLB  ; 
-18, multu: ICache  ITLB  ; 
-19, mfhi : Disk  ; 
-20, mflo : ICache  ITLB  ; 
-21, addi : ITLB  ; 
-22, addi : ICache  ITLB  ; 
-23, addi : Disk  ; 
-24, addi : ICache  ITLB  ; 
-25, sw   : ITLB  ;  Disk 
-26, sh   : ICache  ITLB  ;  DTLB 
-27, sb   : Disk  ;  DTLB 
-28, lw   : ICache  ITLB  ;  DCache  DTLB 
-29, sll  : ITLB  ; 
-30, lh   : ICache  ITLB  ;  DCache  DTLB 
-31, lhu  : Disk  ;  DCache  DTLB 
-32, lb   : ICache  ITLB  ;  DCache  DTLB 
-33, lbu  : ITLB  ;  DCache  DTLB 
-34, lui  : ICache  ITLB  ; 
-35, andi : Disk  ; 
-36, ori  : ICache  ITLB  ; 
-37, nori : ITLB  ; 
-38, slti : ICache  ITLB  ; 
-39, beq  : Disk  ; 
-40, sll  : ITLB  ; 
-41, sll  : ICache  ITLB  ; 
-42, bne  : Disk  ; 
-43, bgtz : Disk  ; 
-44, halt : ITLB  ; 
+1, lw   : Disk  ;  Disk 
+2, lw   : ICache  ITLB  ;  DCache  DTLB 
+3, addi : ICache  ITLB  ;  Disk 
+4, bne  : ICache  ITLB  ;  Disk 
+5, xor  : ITLB  ;  Disk 
+6, j    : ICache  ITLB  ;  Disk 
+7, and  : ITLB  ;  Disk 
+8, or   : ITLB  ;  Disk 
+9, xor  : ICache  ITLB  ;  Disk 
+10, nor  : ICache  ITLB  ;  Disk 
+11, nand : ICache  ITLB  ;  Disk 
+12, andi : ITLB  ;  Disk 
+13, ori  : ICache  ITLB  ;  Disk 
+14, nori : ICache  ITLB  ;  Disk 
+15, lw   : ICache  ITLB  ;  DCache  DTLB 
+16, addiu: ITLB  ;  Disk 
+17, addi : ICache  ITLB  ;  Disk 
+18, lw   : ICache  ITLB  ;  Disk 
+19, add  : ICache  ITLB  ;  Disk 
+20, addu : ITLB  ;  Disk 
+21, sub  : ICache  ITLB  ;  Disk 
+22, lb   : ICache  ITLB  ;  Disk 
+23, lh   : ICache  ITLB  ;  DCache  DTLB 
+24, lw   : ITLB  ;  Disk 
+25, lbu  : ICache  ITLB  ;  DCache  DTLB 
+26, lhu  : ICache  ITLB  ;  DCache  DTLB 
+27, lw   : ICache  ITLB  ;  Disk 
+28, lh   : Disk  ;  DCache  DTLB 
+29, lb   : ICache  ITLB  ;  DCache  DTLB 
+30, lw   : ICache  ITLB  ;  DCache  DTLB 
+31, sw   : ICache  ITLB  ;  DCache  DTLB 
+32, sh   : ITLB  ;  DCache  DTLB 
+33, sb   : ICache  ITLB  ;  DCache  DTLB 
+34, lw   : ICache  ITLB  ;  DCache  DTLB 
+35, lw   : ICache  ITLB  ;  DCache  DTLB 
+36, add  : ITLB  ;  Disk 
+37, bne  : ICache  ITLB  ;  Disk 
+38, add  : ICache  ITLB  ;  Disk 
+39, add  : ICache  ITLB  ;  Disk 
+40, bne  : ITLB  ;  Disk 
+41, sub  : ICache  ITLB  ;  Disk 
+42, sll  : ICache  ITLB  ;  Disk 
+43, halt : ICache  ITLB  ;  Disk 
