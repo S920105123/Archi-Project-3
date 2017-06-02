@@ -26,7 +26,7 @@ do
 			cd ..;	
 			echo -e "   Testcase: ${dir}\t- ${YELLOW}[Illegal]${NC}... ($(cat golden/tmp))"
 			#rm -r open/${dir}
-			continue;
+			exit 1
 		fi
 		cd ../simulator
 		./CMP ${conf}
