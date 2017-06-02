@@ -6,11 +6,12 @@ cp dimage.bin ../simulator/dimage.bin
 cp iimage.bin ../simulator/iimage.bin
 
 cd ../golden
-./single_cycle
+./CMP
 cd ../simulator
-./single_cycle
+./CMP
 cd ../testcase
 
 echo -------------diff-------------
 diff -c ../golden/snapshot.rpt ../simulator/snapshot.rpt
-diff -c ../golden/error_dump.rpt ../simulator/error_dump.rpt
+diff -c ../golden/trace.rpt ../simulator/trace.rpt
+diff -c ../golden/report.rpt ../simulator/report.rpt

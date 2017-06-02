@@ -1,3 +1,3 @@
-cat ../golden/error_dump.rpt
+cat ../golden/report.rpt
 echo --------------------------
-cat ../simulator/error_dump.rpt
+cat ../simulator/report.rpt
