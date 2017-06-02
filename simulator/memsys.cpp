@@ -233,7 +233,7 @@ void Memory_system::access(int cycle, int addr) {
 			pgt_miss++;
 			cache_miss++;
 			ppn=pgt_insert(cycle,vpn);
-    		fprintf(ftrace," Disk ");
+		  if (trace) fprintf(ftrace," Disk ");
 			addr=(ppn*pg_sz)|(addr%pg_sz);
 			cache_insert(addr);
 			tlb_insert(cycle,vpn,ppn);
@@ -272,11 +272,11 @@ void init_memsys(int argc, char **argv) {
 	if (trace) ftrace=fopen("trace.rpt","w");
 	if (argc<11) {
 		/* Default parameters */
-    fprintf(stderr,"  NO Eat %d: ",argc);
-		for (int i=0;i<argc;i++) {
-      fprintf(stderr," -%s\n",argv[i]);
-		}
-    fprintf(stderr,"\n");
+    //fprintf(stderr,"  NO Eat %d: ",argc);
+		//for (int i=0;i<argc;i++) {
+    //  fprintf(stderr," -%s\n",argv[i]);
+		//}
+    //fprintf(stderr,"\n");
 		param[0] = 64;  // I memory size.
 		param[1] = 32;  // D memory size.
 		param[2] = 8;   // I page size.
@@ -288,12 +288,12 @@ void init_memsys(int argc, char **argv) {
 		param[8] = 4;   // D cache block size 
 		param[9] = 1;   // D cache associativity
 	} else {
-    fprintf(stderr,"Eat: ");
+    //fprintf(stderr,"Eat: ");
 		for (int i=0;i<10;i++) {
 			param[i]=atoi(argv[i+1]);
-      fprintf(stderr,"%d ",param[i]);
+      //fprintf(stderr,"%d ",param[i]);
 		}
-    fprintf(stderr,"\n");
+    //fprintf(stderr,"\n");
 	}
 	i_memsys=new Memory_system('I',param[2],param[0],param[4],param[5],param[6]);
 	d_memsys=new Memory_system('D',param[3],param[1],param[7],param[8],param[9]);

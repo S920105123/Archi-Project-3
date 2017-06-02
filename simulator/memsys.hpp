@@ -55,6 +55,6 @@ void init_memsys(int argc, char **argv);
 extern Memory_system *i_memsys;
 extern Memory_system *d_memsys;
 extern FILE *ftrace;
-const bool trace=true;
+const bool trace=false;
 
 #endif
